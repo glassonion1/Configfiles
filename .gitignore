@@ -1,0 +1,6 @@
+# Mac
+.DS_Store
+
+# Emacs
+.emacs.d/auto-save-list
+.emacs.d/elpa
