@@ -11,6 +11,12 @@ if [ -d ${HOME}/.pyenv ]; then
     eval "$(pyenv init -)"
 fi
 
+export PATH="$HOME/.rbenv/bin:$PATH" 
+eval "$(rbenv init -)"
+
+# opensslのパス
+export PATH="/usr/local/opt/openssl/bin:$PATH"
+
 # 色を使用出来るようにする
 autoload -Uz colors
 colors
