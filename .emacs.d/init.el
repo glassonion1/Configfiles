@@ -53,12 +53,44 @@
 (set-face-foreground 'whitespace-tab "LightSlateGray")
 (set-face-background 'whitespace-tab "DarkSlateGray")
 
+;; flycheck
+(package-install 'flycheck)
+;(global-flycheck-mode)
+
+;; yaml mode
+(package-install 'yaml-mode)
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.ya?ml$" . yaml-mode))
+(define-key yaml-mode-map "\C-m" 'newline-and-indent)
+
+;; ruby mode
+(autoload 'ruby-mode "ruby-mode")
+(autoload 'ruby-electric-mode "ruby-electric")
+(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
+(setq ruby-insert-encoding-magic-comment nil)
+
+; golang
+(add-to-list 'exec-path (expand-file-name "/Users/taisuke.fujita/.goenv/versions/1.8.3"))
+(add-to-list 'exec-path (expand-file-name "/Users/taisuke.fujita/go/bin"))
+(package-install 'go-mode)
+(package-install 'go-autocomplete)
+(package-install 'go-eldoc)
+(package-install 'company-go)
+(require 'go-mode)
+(require 'company-go)
+(require 'go-autocomplete)
+(require 'auto-complete-config)
+(add-hook 'go-mode-hook (lambda()
+                          (local-set-key (kbd "M-.") 'godef-jump)
+                          (set (make-local-variable 'company-backends) '(company-go))
+                          (company-mode)
+                          (add-hook 'go-mode-hook 'go-eldoc-setup)
+                          (setq tab-width 4)))
+
 ;; CSS mode
 (autoload 'css-mode "css-mode")
 (setq auto-mode-alist
       (cons '("\\.scss\\'" . css-mode) auto-mode-alist))
-
-;(setq js-indent-level 2)
 
 (add-hook
  'sgml-mode-hook
@@ -71,18 +103,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (plantuml-mode ## atom-dark-theme))))
+ '(package-selected-packages
+   (quote
+    (go-autocomplete go-eldoc yaml-mode flycheck exec-path-from-shell plantuml-mode ## atom-dark-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-;; puml
-(setq org-plantuml-jar-path "~/plantuml.jar")
-(defun org-mode-init ()
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   (add-to-list 'org-babel-load-languages '(plantuml . t))))
-(add-hook 'org-mode-hook 'org-mode-init)

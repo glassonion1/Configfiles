@@ -11,8 +11,20 @@ if [ -d ${HOME}/.pyenv ]; then
     eval "$(pyenv init -)"
 fi
 
-export PATH="$HOME/.rbenv/bin:$PATH" 
-eval "$(rbenv init -)"
+if [ -d ${HOME}/.rbenv ]; then
+    export PATH="$HOME/.rbenv/bin:$PATH"
+    eval "$(rbenv init -)"
+fi
+
+if [ -d ${HOME}/.goenv ]; then
+    export GO15VENDOREXPERIMENT=1
+    export GOENV_ROOT=$HOME/.goenv
+    export GOROOT=`go env GOROOT`
+    export GOTOOLDIR=$HOME/go/pkg/darwin_amd64
+    export GOPATH=$HOME/Documents/xxxxx
+    export PATH=$HOME/.goenv/bin:$GOPATH/bin:$GOROOT/bin:$PATH
+    eval "$(goenv init -)"
+fi
 
 # opensslのパス
 export PATH="/usr/local/opt/openssl/bin:$PATH"
@@ -89,3 +101,9 @@ setopt interactive_comments
 
 # launch emacs on commandline
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/taisuke.fujita/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/taisuke.fujita/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/taisuke.fujita/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/taisuke.fujita/google-cloud-sdk/completion.zsh.inc'; fi
