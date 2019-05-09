@@ -16,13 +16,9 @@ if [ -d ${HOME}/.rbenv ]; then
     eval "$(rbenv init -)"
 fi
 
-if [ -d ${HOME}/.goenv ]; then
-    export GO15VENDOREXPERIMENT=1
+if [ -d ${HOME}/go ]; then
     export GOENV_ROOT=$HOME/.goenv
-    export GOROOT=`go env GOROOT`
-    export GOTOOLDIR=$HOME/go/pkg/darwin_amd64
-    export GOPATH=$HOME/Documents/xxxxx
-    export PATH=$HOME/.goenv/bin:$GOPATH/bin:$GOROOT/bin:$PATH
+    export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
     eval "$(goenv init -)"
 fi
 
