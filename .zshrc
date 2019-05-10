@@ -18,12 +18,14 @@ fi
 
 if [ -d ${HOME}/go ]; then
     export GOENV_ROOT=$HOME/.goenv
-    export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+    export PATH=$HOME/.goenv/bin:$GOPATH/bin:$PATH
     eval "$(goenv init -)"
 fi
 
 # opensslのパス
 export PATH="/usr/local/opt/openssl/bin:$PATH"
+
+export PATH=/usr/local/Cellar/git/2.17.1/bin:$PATH
 
 # 色を使用出来るようにする
 autoload -Uz colors
@@ -46,8 +48,8 @@ setopt hist_ignore_all_dups
 
 # ヒストリの設定
 HISTFILE=~/.zsh_history
-HISTSIZE=1000000
-SAVEHIST=1000000
+HISTSIZE=10000000
+SAVEHIST=10000000
 
 # プロンプト
 # 1行表示
