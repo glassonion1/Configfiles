@@ -10,6 +10,7 @@
                     (when (equal system-type 'darwin)
                       (setq mac-option-modifier 'meta))
                     ))
+(setq-default indent-tabs-mode nil)
 ;; ファイルの設定
 (setq delete-auto-save-files t)
 (setq backup-inhibited t)
