@@ -17,7 +17,7 @@
 ;; Clipboard
 (setq x-select-enable-clipboard t)
 
-;; パッケージ管理
+;; パッケージ管理サーバ
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -25,7 +25,7 @@
 ;; パッケージ情報の更新
 ;(package-refresh-contents)
 
-;; インストールするパッケージ
+;; インストールするパッケージのリスト
 (defvar my/favorite-packages
   '(
     go-mode
@@ -41,6 +41,9 @@
 (dolist (package my/favorite-packages)
   (unless (package-installed-p package)
     (package-install package)))
+
+;; シェルに設定されている環境変数を引き継ぐ
+(exec-path-from-shell-initialize)
 
 ;; 濁点分離問題
 (use-package ucs-normalize
@@ -66,6 +69,9 @@
 (global-whitespace-mode 1)
 
 ;; eglot
+;; M-.で定義ジャンプ、M-,でジャンプ先からもどる
+;; eglot はデフォルトの Language Server として go-langserver を使うので golsp に変更する
+;; 事前に go get -u golang.org/x/tools/cmd/gopls しておくこと
 (use-package eglot
   :config
   (define-key eglot-mode-map (kbd "M-.") 'xref-find-definitions)
@@ -73,6 +79,7 @@
   (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
   (add-hook 'go-mode-hook 'eglot-ensure))
 
+;; company-mode
 (use-package company
   :config
   (global-company-mode)
@@ -98,7 +105,8 @@
             (lambda () (c-add-style "my-style" my-protobuf-style t))))
 
 ;; go-mode
-;; global-whitespace-modeを使うときはindent-tabs-modeをnilにすること(companyが誤動作する)
+;; global-whitespace-modeを使うときはindent-tabs-modeをnilにすること、companyが誤作動する
+;; 事前に go get golang.org/x/tools/cmd/goimports しておくこと
 (let ((envs '("GOROOT" "GOPATH")))
   (exec-path-from-shell-copy-envs envs))
 (use-package go-mode
@@ -113,3 +121,17 @@
   :config
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (protobuf-mode yaml-mode use-package go-mode exec-path-from-shell eglot company atom-dark-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
