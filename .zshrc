@@ -18,8 +18,9 @@ fi
 
 if [ -d ${HOME}/go ]; then
     export GOENV_ROOT=$HOME/.goenv
-    export PATH=$HOME/.goenv/bin:$GOPATH/bin:$PATH
+    export PATH=$HOME/.goenv/bin:$GOPATH/bin:$PATH:$HOME/go
     eval "$(goenv init -)"
+    export PATH=$GOPATH/bin:$PATH
 fi
 
 # opensslのパス
