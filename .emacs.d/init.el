@@ -18,7 +18,6 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
-(add-to-list 'package-archives  '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (package-initialize)
 
@@ -93,7 +92,8 @@
   (define-key eglot-mode-map (kbd "C-c C-r") 'eglot-code-actions)
   (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
   (add-hook 'go-mode-hook #'eglot-ensure)
-  (add-hook 'go-mode-hook #'yas-minor-mode))
+  (add-hook 'typescript-mode-hook #'eglot-ensure))
+
 ;; Bridge projectile and project together so packages that depend on project
 ;; like eglot work
 (use-package projectile
@@ -164,14 +164,30 @@
   (add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
   )
 
+;; typescript
+(use-package tide
+  :ensure t)
+(use-package typescript-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+  (add-hook 'typescript-mode-hook
+          '(lambda ()
+             (interactive)
+             (tide-setup)
+             (tide-hl-identifier-mode +1)
+             (make-local-variable 'typescript-indent-level)
+             (setq typescript-indent-level 2)
+             )))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (jsonrpc flymake flymake-go protobuf-mode yaml-mode use-package go-mode exec-path-from-shell eglot company atom-dark-theme))))
+   '(package-utils jsonrpc flymake flymake-go protobuf-mode yaml-mode use-package go-mode exec-path-from-shell eglot company atom-dark-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
