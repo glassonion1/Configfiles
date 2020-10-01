@@ -9,6 +9,9 @@ if [ -d $HOME/.anyenv ]
 then
     export PATH="$HOME/.anyenv/bin:$PATH"
     eval "$(anyenv init -)"
+    # GOPATHをgoenvの管理化から外す
+    export GOENV_DISABLE_GOPATH=1
+    export PATH="$PATH:$HOME/go/bin"
 fi
 
 # opensslのパス
@@ -90,7 +93,7 @@ setopt interactive_comments
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/taisuke.fujita/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/taisuke.fujita/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/taisuke.fujita/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/taisuke.fujita/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/taisuke.fujita/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/taisuke.fujita/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/Users/taisuke.fujita/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/taisuke.fujita/google-cloud-sdk/completion.zsh.inc'; fi

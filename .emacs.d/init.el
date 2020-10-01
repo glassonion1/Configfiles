@@ -90,9 +90,10 @@
   (define-key eglot-mode-map (kbd "M-,") 'pop-tag-mark)
   (define-key eglot-mode-map (kbd "C-c C-d") 'eglot-help-at-point)
   (define-key eglot-mode-map (kbd "C-c C-r") 'eglot-code-actions)
-  (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
-  (add-hook 'go-mode-hook #'eglot-ensure)
-  (add-hook 'typescript-mode-hook #'eglot-ensure))
+  (add-to-list 'eglot-server-programs
+               '(go-mode . ("gopls")))
+  (add-hook 'go-mode-hook 'eglot-ensure)
+  (add-hook 'typescript-mode-hook 'eglot-ensure))
 
 ;; Bridge projectile and project together so packages that depend on project
 ;; like eglot work
