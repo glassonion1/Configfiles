@@ -165,6 +165,13 @@
   (add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
   )
 
+;; graphql-mode
+(use-package graphql-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.graphqls$" . graphql-mode))
+  )
+
 ;; typescript
 (use-package tide
   :ensure t)
