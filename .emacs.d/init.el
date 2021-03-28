@@ -138,7 +138,7 @@
   (setq company-minimum-prefix-length 1)
   (setq company-dabbrev-downcase nil)
   (setq company-selection-wrap-around t))
-;; 各種メジャーモードでも C-M-iで company-modeの補完を使う
+;; 各種メジャーモードで C-M-i で company-modeの補完を使う
 (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
 
 ;; rust-mode
@@ -200,30 +200,3 @@
              (make-local-variable 'typescript-indent-level)
              (setq typescript-indent-level 2)
              )))
-
-;(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-; '(package-selected-packages
-;   '(package-utils jsonrpc flymake flymake-go protobuf-mode yaml-mode use-package go-mode exec-path-from-shell eglot company atom-dark-theme)))
-;(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-; )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(cargo rust-mode yaml-mode use-package tide protobuf-mode projectile neotree go-mode exec-path-from-shell eglot company atom-dark-theme)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
