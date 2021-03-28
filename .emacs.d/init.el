@@ -80,7 +80,9 @@
 ;; eglot
 ;; M-.で定義ジャンプ、M-,でジャンプ先からもどる
 ;; eglot はデフォルトの Language Server として go-langserver を使うので golsp に変更する
-;; 事前に go get -u golang.org/x/tools/cmd/gopls しておくこと
+;; 事前にLSPのインストールをしておくこと
+;;   go get -u golang.org/x/tools/cmd/gopls
+;;   rustup component add rls rust-src
 ;; プロジェクトルートには.projectileを置くこと
 (use-package eglot
   :ensure t
@@ -93,7 +95,8 @@
   (add-to-list 'eglot-server-programs
                '(go-mode . ("gopls")))
   (add-hook 'go-mode-hook 'eglot-ensure)
-  (add-hook 'typescript-mode-hook 'eglot-ensure))
+  (add-hook 'typescript-mode-hook 'eglot-ensure)
+  (add-hook 'rust-mode-hook 'eglot-ensure))
 
 ;; Bridge projectile and project together so packages that depend on project
 ;; like eglot work
@@ -129,13 +132,22 @@
 (use-package company
   :ensure t
   :config
-  ;(global-company-mode)
-  (add-hook 'go-mode-hook 'company-mode)
+  (add-hook 'after-init-hook 'global-company-mode)
   ;; Optionally enable completion-as-you-type behavior.
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 1)
   (setq company-dabbrev-downcase nil)
   (setq company-selection-wrap-around t))
+;; 各種メジャーモードでも C-M-iで company-modeの補完を使う
+(define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
+
+;; rust-mode
+(use-package rust-mode
+  :ensure t
+  :custom rust-format-on-save t)
+(use-package cargo
+  :ensure t
+  :hook (rust-mode . cargo-minor-mode))
 
 ;; go-mode
 (use-package go-mode
@@ -182,13 +194,26 @@
              (setq typescript-indent-level 2)
              )))
 
+;(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+; '(package-selected-packages
+;   '(package-utils jsonrpc flymake flymake-go protobuf-mode yaml-mode use-package go-mode exec-path-from-shell eglot company atom-dark-theme)))
+;(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+; )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(package-utils jsonrpc flymake flymake-go protobuf-mode yaml-mode use-package go-mode exec-path-from-shell eglot company atom-dark-theme)))
+   '(cargo rust-mode yaml-mode use-package tide protobuf-mode projectile neotree go-mode exec-path-from-shell eglot company atom-dark-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
