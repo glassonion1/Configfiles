@@ -9,10 +9,25 @@ if [ -d $HOME/.anyenv ]
 then
     export PATH="$HOME/.anyenv/bin:$PATH"
     eval "$(anyenv init -)"
-    # GOPATHをgoenvの管理化から外す
-    export GOENV_DISABLE_GOPATH=1
-    export PATH="$PATH:$HOME/go/bin"
 fi
+
+export GOROOT=/usr/local/go                                                 
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+# cdr, add-zsh-hook を有効にする
+mkdir -p $HOME/.cache/shell/
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+
+# cdr の設定
+zstyle ':completion:*' recent-dirs-insert both
+zstyle ':chpwd:*' recent-dirs-default true
+zstyle ':chpwd:*' recent-dirs-max 1000
+zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/shell/chpwd-recent-dirs"
+
+# スクリプト読み込み(cdr必須)
+for f (~/.zsh/*) source "${f}"
 
 # opensslのパス
 export PATH="/usr/local/opt/openssl/bin:$PATH"
