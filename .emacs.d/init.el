@@ -78,37 +78,6 @@
   (bind-key [f8] 'neotree-toggle)
   )
 
-;; eglot
-;; M-.で定義ジャンプ、M-,でジャンプ先からもどる
-;; eglot はデフォルトの Language Server として go-langserver を使うので golsp に変更する
-;; 事前にLSPのインストールをしておくこと
-;;   go get -u golang.org/x/tools/cmd/gopls
-;;   rustup component add rls rust-src
-;; プロジェクトルートには.projectileを置くこと
-;(use-package eglot
-;  :ensure t
-;  :config
-;  (add-to-list 'eglot-server-programs
-;               '(go-mode . ("gopls")))
-;  :bind (:map eglot-mode-map
-;              ("C-c C-d" . eglot-help-at-point)
-;              ("C-c C-r" . eglot-code-actions))
-;  :hook((go-mode-hook . eglot-ensure)
-;        (typescript-mode-hook . eglot-ensure)
-;        (rust-mode-hook . eglot-ensure))
-;  )
-
-;; Bridge projectile and project together so packages that depend on project
-;; like eglot work
-;(use-package projectile
-;  :ensure t)
-;(defun my-projectile-project-find-function (dir)
-;  (let ((root (projectile-project-root dir)))
-;    (and root (cons 'transient root))))
-;(projectile-mode t)
-;(with-eval-after-load 'project
-;  (add-to-list 'project-find-functions 'my-projectile-project-find-function))
-
 ;; lsp-mode
 ;; プロジェクトルートで M-x lsp-workspace-folder-add を実行すること
 (use-package lsp-mode
@@ -121,15 +90,15 @@
     ) . lsp-deferred)
   :custom
   (lsp-rust-server 'rls)
-  (lsp-message-project-root-warning t)
-  (create-lockfiles nil)
   :commands lsp)
 ;; ローカル変数にLSPを適応させる
 (add-hook 'hack-local-variables-hook
           (lambda () (when (derived-mode-p 'go-mode) (lsp))))
 (add-hook 'hack-local-variables-hook
           (lambda () (when (derived-mode-p 'tide-mode) (lsp))))
-
+;; flycheck
+(use-package flycheck
+  :ensure t)
 ;; Company mode is a standard completion package that works well with lsp-mode.
 (use-package company
   :ensure t
@@ -211,13 +180,9 @@
   :mode
   ("\\.graphqls$" . graphql-mode))
 
-;; typescript 
-(use-package typescript-mode
-  :ensure t
-  :hook
-  (typescript-mode . subword-mode)
-  :custom
-  (typescript-indent-level 2))
+;; setup tide mode
+(use-package tide
+  :ensure t)
 
 (defun my/prettier ()
   (interactive)
@@ -226,12 +191,6 @@
       (shell-quote-argument (executable-find "prettier"))
       (shell-quote-argument (expand-file-name buffer-file-name))))
   (revert-buffer t t t))
-
-;; setup tide mode
-(use-package tide
-  :ensure t
-  :hook
-  (before-save . my/prettier))
 
 (defun setup-tide-mode ()
   (interactive)
@@ -272,6 +231,9 @@
             (lambda ()
               (when (string-equal "ts" (file-name-extension buffer-file-name))
                 (setup-tide-mode))))
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook 'my/prettier t t)))
   )
 
 
