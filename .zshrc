@@ -5,12 +5,6 @@ export LANG=ja_JP.UTF-8
 PATH=/bin:/usr/bin:/usr/local/bin:${PATH}
 export PATH
 
-if [ -d $HOME/.anyenv ]
-then
-    export PATH="$HOME/.anyenv/bin:$PATH"
-    eval "$(anyenv init -)"
-fi
-
 export GOROOT=/usr/local/go                                                 
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
