@@ -83,19 +83,15 @@
 (use-package lsp-mode
   :ensure t
   :hook
-  ((rust-mode
-    go-mode
-    python-mode
-    typescript-mode
-    ) . lsp-deferred)
+  ((rust-mode . lsp)
+   (go-mode . lsp)
+   (python-mode . lsp)
+   (web-mode . lsp)
+   (lsp-mode . lsp-enable-which-key-integration))
   :custom
   (lsp-rust-server 'rls)
   :commands lsp)
-;; ローカル変数にLSPを適応させる
-(add-hook 'hack-local-variables-hook
-          (lambda () (when (derived-mode-p 'go-mode) (lsp))))
-(add-hook 'hack-local-variables-hook
-          (lambda () (when (derived-mode-p 'tide-mode) (lsp))))
+
 ;; flycheck
 (use-package flycheck
   :ensure t)
@@ -192,24 +188,14 @@
       (shell-quote-argument (expand-file-name buffer-file-name))))
   (revert-buffer t t t))
 
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
-
 ;; web-mode
 (use-package web-mode
   :ensure t
   :mode (("\\.html?\\'" . web-mode)
          ("\\.json\\'" . web-mode)
-         ("\\.ts\\'" . web-mode)
-         ("\\.tsx\\'" . web-mode)
-         ("\\.js\\'" . web-mode)
-         ("\\.jsx\\'" . web-mode))
+         ("\\.css\\'" . web-mode)
+         ("\\.ts[x]?\\'" . web-mode)
+         ("\\.js[x]?\\'" . web-mode))
   :custom
   (web-mode-attr-indent-offset nil)
   (web-mode-enable-auto-closing t)
@@ -223,14 +209,6 @@
   (indent-tabs-mode nil)
   (tab-width 2)
   :config
-  (add-hook 'web-mode-hook
-            (lambda ()
-              (when (string-equal "tsx" (file-name-extension buffer-file-name))
-                (setup-tide-mode))))
-  (add-hook 'web-mode-hook
-            (lambda ()
-              (when (string-equal "ts" (file-name-extension buffer-file-name))
-                (setup-tide-mode))))
   (add-hook 'web-mode-hook
             (lambda ()
               (add-hook 'after-save-hook 'my/prettier t t)))
