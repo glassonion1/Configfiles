@@ -7,6 +7,7 @@
                     (when (equal system-type 'darwin)
                       (setq mac-option-modifier 'meta))
                     ))
+
 (setq-default indent-tabs-mode nil)
 ;; ファイルの設定
 (setq delete-auto-save-files t)
@@ -86,7 +87,7 @@
   ((rust-mode . lsp)
    (go-mode . lsp)
    (python-mode . lsp)
-   (web-mode . lsp)
+   ;(web-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
   :custom
   (lsp-rust-server 'rls)
@@ -188,6 +189,11 @@
       (shell-quote-argument (expand-file-name buffer-file-name))))
   (revert-buffer t t t))
 
+(defun my/web-mode-tsx-hook ()
+  (let ((ext (file-name-extension buffer-file-name)))
+    (when (or (string-equal "ts" ext) (string-equal "tsx" ext))
+      (lsp))))
+
 ;; web-mode
 (use-package web-mode
   :ensure t
@@ -206,12 +212,14 @@
   (web-mode-css-indent-offset 2)
   (web-mode-code-indent-offset 2)
   (web-mode-enable-current-element-highlight t)
-  (indent-tabs-mode nil)
+  (electric-indent-mode -1)
   (tab-width 2)
   :config
   (add-hook 'web-mode-hook
             (lambda ()
               (add-hook 'after-save-hook 'my/prettier t t)))
+  :hook
+  (web-mode . my/web-mode-tsx-hook)
   )
 
 
@@ -237,7 +245,8 @@
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
    '(solidity-mode tide graphql-mode protobuf-mode yaml-mode go-mode cargo rust-mode company projectile eglot neotree atom-dark-theme exec-path-from-shell use-package))
- '(warning-suppress-log-types '((auto-save))))
+ '(warning-suppress-log-types '((auto-save)))
+ '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
