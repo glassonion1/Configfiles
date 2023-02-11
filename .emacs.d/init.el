@@ -197,6 +197,8 @@
 ;; web-mode
 (use-package web-mode
   :ensure t
+  :init
+  (setq web-mode-enable-auto-indentation nil)
   :mode (("\\.html?\\'" . web-mode)
          ("\\.json\\'" . web-mode)
          ("\\.css\\'" . web-mode)
