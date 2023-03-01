@@ -224,6 +224,11 @@
   (web-mode . my/web-mode-tsx-hook)
   )
 
+;; docker-mode
+(use-package dockerfile-mode
+  :ensure t
+  :mode
+  ("Dockerfile\\'" . dockerfile-mode))
 
 (defun solidity-mode-hook ()
   (setq c-basic-offset 2)
