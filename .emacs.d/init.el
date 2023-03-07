@@ -15,6 +15,11 @@
 ;; Clipboard
 (setq x-select-enable-clipboard t)
 
+;; package-selected-packages対策
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 ;; パッケージ管理サーバ
 (eval-and-compile
   (customize-set-variable
@@ -177,10 +182,6 @@
   :mode
   ("\\.graphqls$" . graphql-mode))
 
-;; setup tide mode
-(use-package tide
-  :ensure t)
-
 (defun my/prettier ()
   (interactive)
   (shell-command
@@ -240,24 +241,3 @@
   (("\\.sol\\'" . solidity-mode))
   :hook
   (solidity-mode . solidity-mode-hook))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-archives
-   '(("gnu" . "https://elpa.gnu.org/packages/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("org" . "https://orgmode.org/elpa/")))
- '(package-selected-packages
-   '(solidity-mode tide graphql-mode protobuf-mode yaml-mode go-mode cargo rust-mode company projectile eglot neotree atom-dark-theme exec-path-from-shell use-package))
- '(warning-suppress-log-types '((auto-save)))
- '(warning-suppress-types '((lsp-mode))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-(put 'downcase-region 'disabled nil)

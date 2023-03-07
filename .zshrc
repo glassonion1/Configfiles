@@ -9,6 +9,9 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
+# GPGの設定
+export GPG_TTY=$(tty)
+
 # cdr, add-zsh-hook を有効にする
 mkdir -p $HOME/.cache/shell/
 autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
