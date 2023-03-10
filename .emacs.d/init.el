@@ -9,6 +9,11 @@
                     ))
 
 (setq-default indent-tabs-mode nil)
+
+;; ls does not support --diredの対策
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
+
 ;; ファイルの設定
 (setq delete-auto-save-files t)
 (setq backup-inhibited t)
@@ -101,19 +106,21 @@
 ;; flycheck
 (use-package flycheck
   :ensure t)
+
 ;; Company mode is a standard completion package that works well with lsp-mode.
 (use-package company
   :ensure t
-  :hook
-  (after-init . global-company-mode)
-  :custom
+  :config
+  (global-company-mode)
   ;; Optionally enable completion-as-you-type behavior.
-  (lsp-completion-provider :capf)
-  (company-idle-delay 0)
-  (company-minimum-prefix-length 1)
-  (company-dabbrev-downcase nil)
-  (company-selection-wrap-around t))
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1)
+  (setq completion-ignore-case t)
+  (setq company-dabbrev-downcase nil)
+  (setq company-selection-wrap-around t))
+
 ;; 各種メジャーモードで C-M-i で company-modeの補完を使う
+(global-set-key (kbd "C-M-i") 'company-complete)
 (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
 
 ;; python-black
