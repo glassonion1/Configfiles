@@ -10,6 +10,9 @@
 
 (setq-default indent-tabs-mode nil)
 
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
+
 ;; ls does not support --diredの対策
 (when (string= system-type "darwin")
   (setq dired-use-ls-dired nil))
@@ -20,33 +23,31 @@
 ;; Clipboard
 (setq x-select-enable-clipboard t)
 
-;; package-selected-packages対策
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
-
-;; パッケージ管理サーバ
-(eval-and-compile
-  (customize-set-variable
-   'package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("org"   . "https://orgmode.org/elpa/")))
-  (package-initialize))
-
-;; パッケージ情報の更新
-;(package-refresh-contents)
+;; straight.el(パッケージマネージャ)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 ;; インストールするパッケージのリスト
 (defvar my/favorite-packages
   '(
     use-package
     exec-path-from-shell
-    atom-dark-theme
+    dracula-theme
     ))
 ;; my/favorite-packagesからインストールしていないパッケージをインストール
 (dolist (package my/favorite-packages)
   (unless (package-installed-p package)
-    (package-install package)))
+    (straight-use-package package)))
 
 ;; シェルに設定されている環境変数を引き継ぐ
 (when (memq window-system '(mac ns x))
@@ -59,8 +60,7 @@
   (setq file-name-coding-system 'utf-8-hfs)
   (setq local-coding-system 'utf-8-hfs))
 ;; テーマと色
-;(load-theme 'manoj-dark t)
-(load-theme 'atom-dark t)
+(load-theme 'dracula t)
 
 ;; 全角スペース タブ trailing-spacesを目立たせる
 (use-package whitespace
@@ -79,7 +79,7 @@
 
 ;; neotree
 (use-package neotree
-  :ensure t
+  :straight t
   :init
   (setq-default neo-keymap-style 'concise)
   :config
@@ -92,24 +92,24 @@
 ;; lsp-mode
 ;; プロジェクトルートで M-x lsp-workspace-folder-add を実行すること
 (use-package lsp-mode
-  :ensure t
+  :straight t
   :hook
   ((rust-mode . lsp)
    (go-mode . lsp)
    (python-mode . lsp)
    ;(web-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration))
+   )
   :custom
   (lsp-rust-server 'rls)
   :commands lsp)
 
 ;; flycheck
 (use-package flycheck
-  :ensure t)
+  :straight t)
 
 ;; Company mode is a standard completion package that works well with lsp-mode.
 (use-package company
-  :ensure t
+  :straight t
   :config
   (global-company-mode)
   ;; Optionally enable completion-as-you-type behavior.
@@ -123,29 +123,36 @@
 (global-set-key (kbd "C-M-i") 'company-complete)
 (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
 
+;; copilotの設定
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :ensure t)
+(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
 ;; python-black
 (use-package python-black
-  :ensure t)
+  :straight t)
 ;; python-mode
 (use-package python-mode
-  :ensure t
+  :straight t
   :mode ("\\.py$" . python-mode)
   :hook
   (python-mode . python-black-on-save-mode))
 
 ;; rust-mode
 (use-package rust-mode
-  :ensure t
+  :straight t
   :custom
   (rust-format-on-save t))
 (use-package cargo
-  :ensure t
+  :straight t
   :hook
   (rust-mode . cargo-minor-mode))
 
 ;; go-mode
 (use-package go-mode
-  :ensure t
+  :straight t
   :mode
   ("\\.go$" . go-mode)
   :hook
@@ -155,7 +162,7 @@
 
 ;; terraform-mode
 (use-package terraform-mode
-  :ensure t
+  :straight t
   :mode
   ("\\.tf$" . terraform-mode)
   :hook
@@ -163,7 +170,7 @@
 
 ;; yaml-mode
 (use-package yaml-mode
-  :ensure t
+  :straight t
   :mode
   ("\\.ya?ml$" . yaml-mode)
   :config
@@ -174,7 +181,7 @@
   '((c-basic-offset . 2)
     (indent-tabs-mode . nil)))
 (use-package protobuf-mode
-  :ensure t
+  :straight t
   :init
   :mode
   ("\\.proto$" . protobuf-mode)
@@ -185,7 +192,7 @@
 
 ;; graphql-mode
 (use-package graphql-mode
-  :ensure t
+  :straight t
   :mode
   ("\\.graphqls$" . graphql-mode))
 
@@ -202,9 +209,16 @@
     (when (or (string-equal "ts" ext) (string-equal "tsx" ext))
       (lsp))))
 
+;; work around ts-ls bug
+(advice-add 'json-parse-buffer :around
+              (lambda (orig &rest rest)
+                (while (re-search-forward "\\u0000" nil t)
+                  (replace-match ""))
+                (apply orig rest)))
+
 ;; web-mode
 (use-package web-mode
-  :ensure t
+  :straight t
   :init
   (setq web-mode-enable-auto-indentation nil)
   :mode (("\\.html?\\'" . web-mode)
@@ -234,7 +248,7 @@
 
 ;; docker-mode
 (use-package dockerfile-mode
-  :ensure t
+  :straight t
   :mode
   ("Dockerfile\\'" . dockerfile-mode))
 
@@ -243,7 +257,7 @@
   )
 ;; solodity-mode
 (use-package solidity-mode
-  :ensure t
+  :straight t
   :mode
   (("\\.sol\\'" . solidity-mode))
   :hook

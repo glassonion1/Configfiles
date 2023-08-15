@@ -1,9 +1,19 @@
 # 環境変数
 export LANG=ja_JP.UTF-8
 
-# 古いMacだといるっぽい
-PATH=/bin:/usr/bin:/usr/local/bin:${PATH}
-export PATH
+# パス周りの設定
+typeset -U path PATH
+path=(
+  /opt/homebrew/bin(N-/)
+  /opt/homebrew/sbin(N-/)
+  /usr/bin
+  /usr/sbin
+  /bin
+  /sbin
+  /usr/local/bin(N-/)
+  /usr/local/sbin(N-/)
+  /Library/Apple/usr/bin
+)
 
 export GOROOT=/usr/local/go                                                 
 export GOPATH=$HOME/go
@@ -28,8 +38,8 @@ for f (~/.zsh/*) source "${f}"
 
 # opensslのパス
 export PATH="/usr/local/opt/openssl/bin:$PATH"
-
-export PATH=/usr/local/Cellar/git/2.17.1/bin:$PATH
+# asdf関連のパス
+export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
 
 # 色を使用出来るようにする
 autoload -Uz colors
@@ -111,3 +121,12 @@ if [ -f '/Users/'${USERNAME}'/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/'
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/'${USERNAME}'/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/'${USERNAME}'/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/t.fujita/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
