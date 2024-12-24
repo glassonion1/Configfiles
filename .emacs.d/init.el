@@ -77,6 +77,12 @@
   (set-face-background 'whitespace-tab "DarkSlateGray"))
 (global-whitespace-mode 1)
 
+(use-package rainbow-mode
+  :straight t
+  :init
+  (add-hook 'web-mode-hook 'rainbow-mode)
+  )
+
 ;; neotree
 (use-package neotree
   :straight t
@@ -107,28 +113,56 @@
 (use-package flycheck
   :straight t)
 
-;; Company mode is a standard completion package that works well with lsp-mode.
-(use-package company
-  :straight t
+(use-package corfu
+  :straight (corfu :type git
+                   :host github
+                   :repo "minad/corfu"
+                   :branch "async"
+                   :files (:defaults "extensions/*"))
+  :custom ((corfu-auto t)
+           (corfu-auto-delay 0)
+           (corfu-auto-prefix 1)
+           (corfu-cycle t)
+           (corfu-on-exact-match nil)
+           (corfu-popupinfo-delay 0)
+           (tab-always-indent 'complete))
+  :init
+  (global-corfu-mode +1)
+  (corfu-popupinfo-mode +1)
   :config
-  (global-company-mode)
+  ;; lsp-modeでcorfuが起動するように設定する
+  (with-eval-after-load 'lsp-mode
+    (setq lsp-completion-provider :none)))
+
+(use-package kind-icon
+  :straight t
+  :after corfu
+  :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+;; Company mode is a standard completion package that works well with lsp-mode.
+;(use-package company
+;  :straight t
+;  :config
+;  (global-company-mode)
   ;; Optionally enable completion-as-you-type behavior.
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 1)
-  (setq completion-ignore-case t)
-  (setq company-dabbrev-downcase nil)
-  (setq company-selection-wrap-around t))
+;  (setq company-idle-delay 0)
+;  (setq company-minimum-prefix-length 1)
+;  (setq completion-ignore-case t)
+;  (setq company-dabbrev-downcase nil)
+;  (setq company-selection-wrap-around t))
 
 ;; 各種メジャーモードで C-M-i で company-modeの補完を使う
-(global-set-key (kbd "C-M-i") 'company-complete)
-(define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
+;(global-set-key (kbd "C-M-i") 'company-complete)
+;(define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
 
 ;; copilotの設定
-(use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-  :ensure t)
-(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+;(use-package copilot
+;  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+;  :ensure t)
+;(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+;(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
 
 ;; python-black
 (use-package python-black
@@ -225,7 +259,8 @@
          ("\\.json\\'" . web-mode)
          ("\\.css\\'" . web-mode)
          ("\\.ts[x]?\\'" . web-mode)
-         ("\\.js[x]?\\'" . web-mode))
+         ("\\.js[x]?\\'" . web-mode)
+         ("\\.[mc]js\\'" . web-mode))
   :custom
   (web-mode-attr-indent-offset nil)
   (web-mode-enable-auto-closing t)
