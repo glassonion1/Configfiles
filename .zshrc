@@ -27,6 +27,9 @@ export PATH="/usr/local/opt/openssl/bin:$PATH"
 # asdf関連のパス
 export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
 
+# pecoスクリプトの読み込み
+for f (~/.zsh/*) source "${f}"
+
 # 色を使用出来るようにする
 autoload -Uz colors
 colors
