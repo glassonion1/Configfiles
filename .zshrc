@@ -22,20 +22,6 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 # GPGの設定
 export GPG_TTY=$(tty)
 
-# cdr, add-zsh-hook を有効にする
-mkdir -p $HOME/.cache/shell/
-autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-add-zsh-hook chpwd chpwd_recent_dirs
-
-# cdr の設定
-zstyle ':completion:*' recent-dirs-insert both
-zstyle ':chpwd:*' recent-dirs-default true
-zstyle ':chpwd:*' recent-dirs-max 1000
-zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/shell/chpwd-recent-dirs"
-
-# スクリプト読み込み(cdr必須)
-for f (~/.zsh/*) source "${f}"
-
 # opensslのパス
 export PATH="/usr/local/opt/openssl/bin:$PATH"
 # asdf関連のパス
@@ -44,10 +30,6 @@ export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
 # 色を使用出来るようにする
 autoload -Uz colors
 colors
-
-# 補完機能を有効にする
-autoload -Uz compinit
-compinit
 
 # cd したら自動的にpushdする
 setopt auto_pushd
@@ -73,15 +55,30 @@ PROMPT="%{${fg[green]}%}[%n@%m]%{${reset_color}%} %~
 %# "
 
 ########################################
-# vcs_info
-autoload -Uz add-zsh-hook
-autoload -Uz vcs_info
-setopt PROMPT_SUBST
-zstyle ':vcs_info:*' formats '(%s)-[%b] %m'  # hook_com[misc]を出力するため%mを追加
-zstyle ':vcs_info:*' actionformats '(%s)-[%b|%a] %m'
-_vcs_precmd () { vcs_info }
-add-zsh-hook precmd _vcs_precmd
-RPROMPT='%F{green}${vcs_info_msg_0_}%f'
+# PROMPTテーマ
+setopt prompt_subst #プロンプト表示する度に変数を展開
+
+precmd () { 
+  if [ -n "$(git status --short 2>/dev/null)" ];then
+    export GIT_HAS_DIFF="✗"
+    export GIT_NON_DIFF=""
+  else 
+    export GIT_HAS_DIFF=""
+    export GIT_NON_DIFF="✔"
+  fi
+  # git管理されているか確認
+  git status --porcelain >/dev/null 2>&1
+  if [ $? -ne 0 ];then
+    export GIT_HAS_DIFF=""
+    export GIT_NON_DIFF=""
+  fi
+  export BRANCH_NAME=$(git branch --show-current 2>/dev/null)
+}
+# 末尾に空白をつけることで改行される
+PROMPT=" 
+%F{cyan}%~%f"
+PROMPT=${PROMPT}'%F{green}  ${BRANCH_NAME} ${GIT_NON_DIFF}%F{red}${GIT_HAS_DIFF} 
+%f$ '
 
 # gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
 zstyle ':vcs_info:git+set-message:*' hooks git-config-user
@@ -90,7 +87,6 @@ zstyle ':vcs_info:git+set-message:*' hooks git-config-user
 function +vi-git-config-user(){
   hook_com[misc]+=`git config user.email`
 }
-
 
 
 # emacs 風キーバインドにする
