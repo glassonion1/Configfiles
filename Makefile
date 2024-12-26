@@ -1,4 +1,4 @@
-DOT_FILES = .zshrc .zsh .emacs.d
+DOT_FILES = .zshrc .emacs.d
 
 all: install
 
