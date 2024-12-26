@@ -141,29 +141,6 @@
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-;; Company mode is a standard completion package that works well with lsp-mode.
-;(use-package company
-;  :straight t
-;  :config
-;  (global-company-mode)
-  ;; Optionally enable completion-as-you-type behavior.
-;  (setq company-idle-delay 0)
-;  (setq company-minimum-prefix-length 1)
-;  (setq completion-ignore-case t)
-;  (setq company-dabbrev-downcase nil)
-;  (setq company-selection-wrap-around t))
-
-;; 各種メジャーモードで C-M-i で company-modeの補完を使う
-;(global-set-key (kbd "C-M-i") 'company-complete)
-;(define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
-
-;; copilotの設定
-;(use-package copilot
-;  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-;  :ensure t)
-;(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-;(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-
 ;; python-black
 (use-package python-black
   :straight t)
@@ -286,14 +263,3 @@
   :straight t
   :mode
   ("Dockerfile\\'" . dockerfile-mode))
-
-(defun solidity-mode-hook ()
-  (setq c-basic-offset 2)
-  )
-;; solodity-mode
-(use-package solidity-mode
-  :straight t
-  :mode
-  (("\\.sol\\'" . solidity-mode))
-  :hook
-  (solidity-mode . solidity-mode-hook))

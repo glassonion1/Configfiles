@@ -80,15 +80,6 @@ PROMPT="
 PROMPT=${PROMPT}'%F{green}  ${BRANCH_NAME} ${GIT_NON_DIFF}%F{red}${GIT_HAS_DIFF} 
 %f$ '
 
-# gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
-zstyle ':vcs_info:git+set-message:*' hooks git-config-user
-
-# "+vi-<フック名>"関数で、hook_com[misc]にgit config user.emailの結果を代入する
-function +vi-git-config-user(){
-  hook_com[misc]+=`git config user.email`
-}
-
-
 # emacs 風キーバインドにする
 bindkey -e
 
