@@ -105,12 +105,6 @@ setopt interactive_comments
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
 
 USERNAME=$(whoami)
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/'${USERNAME}'/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/'${USERNAME}'/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/'${USERNAME}'/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/'${USERNAME}'/google-cloud-sdk/completion.zsh.inc'; fi
 export PATH="/usr/local/opt/mysql-client/bin:$PATH"
 
 # pnpm
@@ -120,3 +114,9 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/taisukefujita/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/taisukefujita/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/taisukefujita/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/taisukefujita/google-cloud-sdk/completion.zsh.inc'; fi
